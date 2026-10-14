@@ -1,0 +1,66 @@
+CRISP Web Application - Test Report
+====================================
+Command: npx vitest run --reporter=verbose (run from webapp/)
+
+Required Test Categories (per Task 5 spec)
+-------------------------------------------
+1. Panel-capacity conflict (more students than panels at same slot)
+   PASS - scheduler.test.ts > panel capacity conflict > reports a conflict
+          when more students need a slot than panels can support
+   PASS - scheduler.test.ts > TC2 panel limitation > schedules only as
+          many simultaneous students as there are panels
+
+2. Student overlap (combined duration exceeds available slot)
+   PASS - scheduler.test.ts > student overlap > never overlaps two
+          interviews for the same student even across companies
+   PASS - scheduler.test.ts > TC3 conflict detection > flags a conflict
+          when a student's interviews cannot all fit in the slot
+
+3. Round-precedence (round 2 never scheduled before round 1)
+   PASS - scheduler.test.ts > round precedence > never schedules round 2
+          before round 1 for the same student/company
+
+4. Invalid input (missing field, negative duration, end time before start)
+   PASS - csv.test.ts > parseCompaniesCsv > missing required field
+   PASS - csv.test.ts > parseCompaniesCsv > negative or zero duration
+   PASS - csv.test.ts > parseCompaniesCsv > negative numRounds
+   PASS - csv.test.ts > parseCompaniesCsv > zero numPanels
+   PASS - csv.test.ts > parseCompaniesCsv > never throws on malformed CSV
+   PASS - csv.test.ts > parseStudentsCsv > missing rollNumber
+   PASS - csv.test.ts > parseStudentsCsv > never throws on malformed CSV
+   PASS - csv.test.ts > parseTimeWindow > end time before start time
+   PASS - csv.test.ts > parseTimeWindow > end time equals start time
+   PASS - csv.test.ts > parseTimeWindow > malformed time format
+   PASS - csv.test.ts > parseTimeWindow > never throws on garbage input
+
+Additional Coverage (Section 4 example + basic cases)
+-------------------------------------------------------
+   PASS - scheduler.test.ts > TC1 basic scheduling > mirrors the Section 4
+          example (CompanyA 30min/2 rounds/2 panels, CompanyB 45min/1
+          round/1 panel, students S1/S2/S3) - 0 conflicts
+   PASS - csv.test.ts > parseCompaniesCsv > parses a valid companies CSV
+   PASS - csv.test.ts > parseStudentsCsv > valid CSV w/ semicolon shortlist
+   PASS - csv.test.ts > parseTimeWindow > parses valid 24-hour times
+
+Summary
+-------
+Test Files: 2 passed (2)
+Tests:      20 passed (20)
+Build:      npm run build - PASS (Next.js 16.2.9, Turbopack, no TS errors)
+
+Manual Verification (example input + conflict case via deployed UI/API)
+---------------------------------------------------------------------------
+Deployed URL: https://webapp-omega-plum.vercel.app
+
+Case A - Section 4 example input (no conflicts expected):
+  Students: S1(101): A,B; S2(102): A; S3(103): B
+  Companies: CompanyA (30min, 2 rounds, 2 panels); CompanyB (45min, 1 round, 1 panel)
+  Slot: 09:00-12:00
+  Result: PASS - all interviews scheduled, 0 conflicts.
+
+Case B - Conflict case (TC3 from spec):
+  1 student shortlisted for 3 companies, each 60min/1 round/1 panel,
+  slot 09:00-11:00 (2-hour window).
+  Result: PASS - only 2 of 3 interviews scheduled, 1 conflict reported
+          with student ID, company name, and reason, shown in the
+          Conflicts dashboard.

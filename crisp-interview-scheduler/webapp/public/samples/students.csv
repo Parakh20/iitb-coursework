@@ -1,0 +1,5 @@
+rollNumber,name,shortlistedCompanies
+101,Alice,CompanyA;CompanyB
+102,Bob,CompanyA;CompanyC
+103,Carol,CompanyB;CompanyC
+104,Dave,CompanyA;CompanyB;CompanyC

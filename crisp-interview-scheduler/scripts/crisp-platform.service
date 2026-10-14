@@ -1,0 +1,17 @@
+[Unit]
+Description=CRISP Platform - Campus Recruitment Interview Scheduling
+After=network.target
+
+[Service]
+Type=simple
+User=crisp
+Group=crisp
+WorkingDirectory=/opt/crisp-platform
+ExecStart=/opt/crisp-platform/crisp_platform --port 8080 --db /opt/crisp-platform/data/crisp_platform.db
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

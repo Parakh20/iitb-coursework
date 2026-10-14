@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  crisp-platform:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - crisp_data:/app/data
+      - crisp_logs:/app/logs
+    environment:
+      - PORT=8080
+      - DATABASE_PATH=/app/data/crisp_platform.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - crisp-platform
+    restart: unless-stopped
+
+volumes:
+  crisp_data:
+  crisp_logs:

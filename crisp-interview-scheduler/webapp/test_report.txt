@@ -1,0 +1,19 @@
+CRISP Webapp - Test Report
+==========================
+
+Command: npm test (vitest run)
+
+Test Files: 2 passed (2)
+  - lib/scheduler.test.ts (6 tests)
+  - lib/csv.test.ts (14 tests)
+
+Tests: 20 passed (20)
+
+Coverage areas:
+- Scheduler: basic scheduling, panel limitation, conflict detection,
+  round precedence, student overlap, panel capacity conflict.
+- CSV parsing/validation: valid parse, missing fields, negative/zero
+  numeric fields, malformed time, end-before/equal-start, never throws.
+
+Build: npm run build completed successfully (Next.js 16.2.9, Turbopack).
+Routes: / (static), /api/schedule (dynamic).

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRISP Platform - Campus Recruitment Interview Scheduling</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-calendar-check"></i> CRISP Platform</h1>
+                <p>Campus Recruitment Interview Scheduling Platform</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="schedule">Schedule Generator</button>
+            <button class="tab-btn" data-tab="students">Students</button>
+            <button class="tab-btn" data-tab="companies">Companies</button>
+            <button class="tab-btn" data-tab="results">Results</button>
+        </nav>
+
+        <!-- Schedule Generator Tab -->
+        <div class="tab-content active" id="schedule">
+            <div class="section">
+                <h2><i class="fas fa-cogs"></i> Schedule Configuration</h2>
+                
+                <div class="time-config">
+                    <h3>Time Slot Configuration</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Time:</label>
+                            <input type="time" id="startTime" value="09:00">
+                        </div>
+                        <div class="form-group">
+                            <label>End Time:</label>
+                            <input type="time" id="endTime" value="17:00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-building"></i> Companies Configuration</h3>
+                    <textarea id="companies" rows="8" placeholder="Enter companies configuration in JSON format">
+[
+  {
+    "name": "Google India",
+    "durationPerRound": 45,
+    "numRounds": 2,
+    "numPanels": 3
+  },
+  {
+    "name": "Microsoft",
+    "durationPerRound": 30,
+    "numRounds": 3,
+    "numPanels": 2
+  },
+  {
+    "name": "Amazon",
+    "durationPerRound": 60,
+    "numRounds": 2,
+    "numPanels": 4
+  },
+  {
+    "name": "Goldman Sachs",
+    "durationPerRound": 45,
+    "numRounds": 2,
+    "numPanels": 2
+  }
+]</textarea>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-users"></i> Students Configuration</h3>
+                    <textarea id="students" rows="8" placeholder="Enter students configuration in JSON format">
+[
+  {
+    "id": "21CS001",
+    "shortlistedCompanies": ["Google India", "Microsoft", "Amazon"]
+  },
+  {
+    "id": "21CS002", 
+    "shortlistedCompanies": ["Google India", "Goldman Sachs"]
+  },
+  {
+    "id": "21CS003",
+    "shortlistedCompanies": ["Microsoft", "Amazon", "Goldman Sachs"]
+  },
+  {
+    "id": "21CS004",
+    "shortlistedCompanies": ["Google India", "Amazon"]
+  },
+  {
+    "id": "21CS005",
+    "shortlistedCompanies": ["Microsoft", "Goldman Sachs"]
+  }
+]</textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-primary" onclick="generateSchedule()">
+                        <i class="fas fa-magic"></i> Generate Schedule
+                    </button>
+                    <button class="btn-secondary" onclick="clearForm()">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Tab -->
+        <div class="tab-content" id="students">
+            <div class="section">
+                <h2><i class="fas fa-user-graduate"></i> Student Management</h2>
+                <div class="student-list">
+                    <p>Student management functionality will be implemented here.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Companies Tab -->
+        <div class="tab-content" id="companies">
+            <div class="section">
+                <h2><i class="fas fa-building"></i> Company Management</h2>
+                <div class="company-list">
+                    <p>Company management functionality will be implemented here.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div class="tab-content" id="results">
+            <div class="section">
+                <h2><i class="fas fa-chart-bar"></i> Scheduling Results</h2>
+                
+                <div class="results-summary" style="display:none;" id="resultsSummary">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <span class="stat-number" id="totalInterviews">0</span>
+                            <span class="stat-label">Total Interviews</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span class="stat-number" id="totalConflicts">0</span>
+                            <span class="stat-label">Conflicts</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-percentage"></i>
+                            <span class="stat-number" id="successRate">0%</span>
+                            <span class="stat-label">Success Rate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-content">
+                    <div class="results-tabs">
+                        <button class="result-tab-btn active" data-result-tab="schedule">Schedule</button>
+                        <button class="result-tab-btn" data-result-tab="conflicts">Conflicts</button>
+                        <button class="result-tab-btn" data-result-tab="raw">Raw Data</button>
+                    </div>
+
+                    <div class="result-tab-content active" id="schedule-results">
+                        <div id="schedule-display"></div>
+                    </div>
+
+                    <div class="result-tab-content" id="conflicts-results">
+                        <div id="conflicts-display"></div>
+                    </div>
+
+                    <div class="result-tab-content" id="raw-results">
+                        <pre id="raw-output"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
+            <p>Generating schedule...</p>
+        </div>
+    </div>
+
+    <script src="static/js/app.js"></script>
+</body>
+</html>
